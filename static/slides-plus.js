@@ -441,21 +441,21 @@ function addEventListeners() {
 /* Initialization */
 
 function addFontStyle() {
-  var el = document.createElement('link');
-  el.rel = 'stylesheet';
-  el.type = 'text/css';
-  el.href = '//fonts.googleapis.com/css?family=' +
-            'Open+Sans:regular,semibold,italic,italicsemibold|Droid+Sans+Mono';
+  // var el = document.createElement('link');
+  // el.rel = 'stylesheet';
+  // el.type = 'text/css';
+  // el.href = '//fonts.googleapis.com/css?family=' +
+  //           'Open+Sans:regular,semibold,italic,italicsemibold|Droid+Sans+Mono';
 
-  document.body.appendChild(el);
+  // document.body.appendChild(el);
 };
 
 function addGeneralStyle() {
-  var el = document.createElement('link');
-  el.rel = 'stylesheet';
-  el.type = 'text/css';
-  el.href = PERMANENT_URL_PREFIX + 'styles.css';
-  document.body.appendChild(el);
+  // var el = document.createElement('link');
+  // el.rel = 'stylesheet';
+  // el.type = 'text/css';
+  // el.href = PERMANENT_URL_PREFIX + 'styles.css';
+  // document.body.appendChild(el);
 
   var el = document.createElement('meta');
   el.name = 'viewport';

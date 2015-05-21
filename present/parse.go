@@ -65,12 +65,15 @@ func Register(name string, parser ParseFunc) {
 
 // Doc represents an entire document.
 type Doc struct {
-	Title    string
-	Subtitle string
-	Time     time.Time
-	Authors  []Author
-	Sections []Section
-	Tags     []string
+	Title          string
+	Subtitle       string
+	Time           time.Time
+	Authors        []Author
+	Sections       []Section
+	Tags           []string
+	Stylesheets    []string
+	Styles         string
+	ShowFinalSlide bool
 }
 
 // Author represents the person who wrote and/or is presenting the document.
@@ -248,6 +251,8 @@ func (ctx *Context) Parse(r io.Reader, name string, mode ParseMode) (*Doc, error
 	if err != nil {
 		return nil, err
 	}
+	doc.Stylesheets = []string{}
+	doc.ShowFinalSlide = true
 	err = parseHeader(doc, lines)
 	if err != nil {
 		return nil, err

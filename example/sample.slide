@@ -1,0 +1,31 @@
+Using Present-Plus
+20 May 2015
+
+Dave Laursen
+Gopher
+my@email.com
+#davelaursen
+
+* Fully Present-Compatible
+
+If you don't create a theme directory, your existing .slide and .article files will render exactly as they do in Go Present.
+
+Theme directories will show up in the Sub-Directories section of the navigation page.
+
+Try it! Run 'present' in the examples directory, then run 'present-plus' to see the difference.
+
+* Creating a Theme
+
+- if you have a .slide file called 'mypres.slide', create a new directory 'mypres.theme'
+- in the .theme directory, add whatever CSS or image files you want to include
+- in the .theme directory, create a json file called 'theme.json' that looks something like this:
+    {
+        "hide-last-slide": false,
+        "stylesheets": [
+            "//fonts.googleapis.com/css?family=Raleway:regular,semibold|Varela",
+            "/static/tmp/black.css"
+        ]
+    }
+- NOTE: the stylesheet values are injected as is into link tags in the HTML - to reference a CSS file in your .theme directory, prefix it with '/static/tmp/'
+
+And that's all there is to it!
