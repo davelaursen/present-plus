@@ -104,6 +104,9 @@ func renderDoc(w io.Writer, docFile string) error {
 	if err != nil {
 		return err
 	}
+	if doc.Theme == "" && defaultTheme != "" && len(doc.Stylesheets) == 0 {
+		doc.Theme = defaultTheme
+	}
 	if doc.Theme != "" {
 		parseTheme(docFile, doc)
 	}

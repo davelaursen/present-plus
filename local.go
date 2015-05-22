@@ -26,13 +26,15 @@ import (
 const basePkg = "github.com/davelaursen/present-plus"
 
 var basePath string
+var defaultTheme string
 
 func main() {
-	httpAddr := flag.String("http", "127.0.0.1:3999", "HTTP service address (e.g., '127.0.0.1:3999')")
+	httpAddr := flag.String("http", "127.0.0.1:4999", "HTTP service address (e.g., '127.0.0.1:4999')")
 	originHost := flag.String("orighost", "", "host component of web origin URL (e.g., 'localhost')")
 	flag.StringVar(&basePath, "base", "", "base path for slide template and static resources")
 	flag.BoolVar(&present.PlayEnabled, "play", true, "enable playground (permit execution of arbitrary user code)")
 	nativeClient := flag.Bool("nacl", false, "use Native Client environment playground (prevents non-Go code execution)")
+	flag.StringVar(&defaultTheme, "theme", "", "the default theme to apply when no custom styles are defined")
 	flag.Parse()
 
 	if basePath == "" {

@@ -2,10 +2,11 @@ section {
     background-color: #1a1a1a;
 }
 
-.slides > article {
+article {
     font-family: Varela, 'Open Sans', 'Helvetica Nueue', Helvetica, Arial, sans-serif;
     color: #222;
     background-image: url(black-bg.jpg);
+    background-size: cover;
 
     transition: transform .3s ease-out, opacity .3s ease-out;
     -o-transition: -o-transform .3s ease-out, opacity .3s ease-out;
@@ -13,12 +14,12 @@ section {
     -webkit-transition: -webkit-transform .3s ease-out, opacity .3s ease-out;
 }
 
-.slides > article.past,
-.slides > article.next {
+article.past,
+article.next {
     opacity: 0.25;
 }
-.slides > article.far-past,
-.slides > article.far-next {
+article.far-past,
+article.far-next {
     opacity: 0.1;
 }
 
@@ -32,20 +33,20 @@ h1, h3, .presenter {
     font-size: 0.9em;
 }
 
-.slides > article > h3 {
+article h3 {
     font-size: 2em;
     padding: 0 0 .5em .1em;
     border-bottom: 1px solid #ccc;
     margin-bottom: 0.75em;
 }
 
-.slides > article.first-slide > h3,
-.slides > article.last-slide > h3 {
+article.first-slide h3,
+article.last-slide h3 {
     font-size: 1.5em;
     border: none;
     padding: none;
     margin: none;
 }
-.slides > article.last-slide {
+article.last-slide {
     padding: 5em;
 }

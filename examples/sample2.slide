@@ -11,24 +11,39 @@ http://github.com/davelaursen
 
 * Fully Present-Compatible
 
-If you don't create a plus directory, your existing .slide and .article files will render exactly as they do in Go Present.
+Since the additional Plus functionality is activated in comment lines, the .slide and .article files will continue to render exactly as they do in Go Present.
 
-Plus directories will show up in the Sub-Directories section of the navigation page.
+In addition, Present-Plus listens on a different default port (4999) than Go Present (3999).
 
-Try it! Run 'present' in the examples directory, then run 'present-plus' to see the difference.
+Try it! Open two command line sessions and go to the examples directory in both. Run `present` in one and `present-plus` in the other and see the difference.
 
-* Creating a Theme
+* Using a Theme
 
-- if you have a .slide file called 'mypres.slide', create a new directory 'mypres.plus'
-- in the .plus directory, add whatever CSS or image files you want to include
-- in the .plus directory, create a json file called 'plus.json' that looks something like this:
-    {
-        "hide-last-slide": false,
-        "stylesheets": [
-            "//fonts.googleapis.com/css?family=Raleway:regular,semibold|Varela",
-            "/static/tmp/black.css"
-        ]
-    }
-- NOTE: the stylesheet values are injected as is into link tags in the HTML - to reference a CSS file in your .plus directory, prefix it with '/static/tmp/'
+Present-Plus comes with several themes out of the box - checkout out the static/themes folder under the source root to see what styles are available.
 
-And that's all there is to it!
+To use a theme, simply add the following line to the top of your .slide file:
+
+    #theme=<theme_name>
+
+* Applying Stylesheets and Fonts
+
+If the stylesheet that you want to load is accessible on the web, you can easily inject it.
+
+And if that stylesheet needs to load web fonts, you can inject that as well.
+
+    #stylesheet=//fonts.googleapis.com/css?family=Raleway:regular,semibold|Varela
+    #stylesheet=//mydomain.com/styles/mystyle.css
+
+* Hiding the Last Slide
+
+There may be times when you don't want the last slide with the presenter details to be shown. You can tell Present-Plus not to render it by adding the following comment line to the top of your .slide file:
+
+    #hideLastSlide=true
+
+# Setting a Default Theme
+
+If you want any presentation that doesn't specify stylesheets or a theme to use a default theme or your choosing, you can specify this when you launch Present-Plus:
+
+    present-plus -theme=black
+
+This will result in the black theme being applied when the basic Go Present styles would otherwise be used.
