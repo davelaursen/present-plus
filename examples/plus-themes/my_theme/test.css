@@ -1,0 +1,51 @@
+section {
+    background-color: #61A161;
+}
+
+.slides > article {
+    font-family: Varela, 'Open Sans', 'Helvetica Nueue', Helvetica, Arial, sans-serif;
+    color: #222;
+    background-image: url(test-bg.jpg);
+
+    transition: transform .3s ease-out, opacity .3s ease-out;
+    -o-transition: -o-transform .3s ease-out, opacity .3s ease-out;
+    -moz-transition: -moz-transform .3s ease-out, opacity .3s ease-out;
+    -webkit-transition: -webkit-transform .3s ease-out, opacity .3s ease-out;
+}
+
+.slides > article.past,
+.slides > article.next {
+    opacity: 0.5;
+}
+.slides > article.far-past,
+.slides > article.far-next {
+    opacity: 0.25;
+}
+
+h1, h3, .presenter {
+    font-family: Raleway, 'Open Sans', 'Helvetica Nueue', Helvetica, Arial, sans-serif;
+    letter-spacing: 0;
+}
+
+.presenter p,
+.presenter p.link {
+    font-size: 0.9em;
+}
+
+.slides > article > h3 {
+    font-size: 2em;
+    padding: 0 0 .5em .1em;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 0.75em;
+}
+
+.slides > article.first-slide > h3,
+.slides > article.last-slide > h3 {
+    font-size: 1.5em;
+    border: none;
+    padding: none;
+    margin: none;
+}
+.slides > article.last-slide {
+    padding: 5em;
+}

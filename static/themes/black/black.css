@@ -27,24 +27,25 @@ h1, h3, .presenter {
     letter-spacing: 0;
 }
 
-.presenter p {
-    font-size: .9em;
+.presenter p,
+.presenter p.link {
+    font-size: 0.9em;
 }
 
 .slides > article > h3 {
     font-size: 2em;
     padding: 0 0 .5em .1em;
     border-bottom: 1px solid #ccc;
-    margin-bottom: .75em;
+    margin-bottom: 0.75em;
 }
 
-.slides > article:first-of-type > h3,
-.slides > article:last-of-type > h3 {
+.slides > article.first-slide > h3,
+.slides > article.last-slide > h3 {
     font-size: 1.5em;
     border: none;
     padding: none;
     margin: none;
 }
-.slides > article:last-of-type {
+.slides > article.last-slide {
     padding: 5em;
 }

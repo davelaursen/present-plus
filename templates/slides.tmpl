@@ -18,7 +18,7 @@
 
     <section class='slides layout-widescreen'>
 
-      <article>
+      <article class="first-slide">
         <h1>{{.Title}}</h1>
         {{with .Subtitle}}<h3>{{.}}</h3>{{end}}
         {{if not .Time.IsZero}}<h3>{{.Time.Format "2 January 2006"}}</h3>{{end}}
@@ -43,7 +43,7 @@
   {{end}}{{/* of Slide block */}}
 
   {{if .ShowFinalSlide}}
-      <article>
+      <article class="last-slide">
         <h3>Thank you</h3>
         {{range .Authors}}
           <div class="presenter">

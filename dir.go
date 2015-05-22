@@ -13,6 +13,8 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strconv"
+	"sync"
 
 	"github.com/davelaursen/present-plus/present"
 )
@@ -20,6 +22,9 @@ import (
 func init() {
 	http.HandleFunc("/", dirHandler)
 }
+
+var tmpIndex = 0
+var mutex = &sync.Mutex{}
 
 // dirHandler serves a directory listing for the requested path, rooted at basePath.
 func dirHandler(w http.ResponseWriter, r *http.Request) {
@@ -99,7 +104,9 @@ func renderDoc(w io.Writer, docFile string) error {
 	if err != nil {
 		return err
 	}
-	parseTheme(docFile, doc)
+	if doc.Theme != "" {
+		parseTheme(docFile, doc)
+	}
 
 	// Find which template should be executed.
 	tmpl := contentTemplate[filepath.Ext(docFile)]
@@ -117,22 +124,62 @@ func parse(name string, mode present.ParseMode) (*present.Doc, error) {
 	return present.Parse(f, name, 0)
 }
 
-func parseTheme(name string, doc *present.Doc) {
-	// create tmp directory
-	targetDir := filepath.Join(basePath, "static", "tmp")
-	if err := os.RemoveAll(targetDir); err != nil {
-		log.Printf("Error deleting tmp directory: %v\n", err)
+func isDir(path string) bool {
+	src, err := os.Stat(path)
+	if err == nil && src != nil {
+		return src.IsDir()
 	}
-	if err := os.Mkdir(targetDir, 0777); err != nil {
-		log.Printf("Error creating tmp directory for theme: %v\n", err)
+	return false
+}
+
+func parseTheme(name string, doc *present.Doc) {
+	// find theme folder
+	lookedIn := ""
+	themePath := ""
+	// first look for plus-themes folder in current or ancestor directory
+	dirPath, err := filepath.Abs(filepath.Dir(name))
+	if err != nil {
+		log.Printf("Error attempting to determine absolute path of file '%s': %v\n", name, err)
+		dirPath = "."
+	}
+	prevPath := ""
+	for dirPath != prevPath {
+		path := filepath.Join(dirPath, "plus-themes")
+		lookedIn += "\n  " + path
+		if isDir(path) {
+			path = filepath.Join(path, doc.Theme)
+			if isDir(path) {
+				themePath = path
+				break
+			}
+		}
+		prevPath = dirPath
+		dirPath = filepath.Dir(dirPath)
+	}
+	// if not found, look in present-plus's static/themes folder
+	if themePath == "" {
+		themePath = filepath.Join(basePath, "static", "themes", doc.Theme)
+		lookedIn += "\n  " + filepath.Dir(themePath)
+		if !isDir(themePath) {
+			log.Printf("Theme folder '%s' could not be found at any of the following locations:%s\n", doc.Theme, lookedIn)
+			return
+		}
+	}
+
+	// create tmp directory
+	mutex.Lock()
+	tmpDir := filepath.Join("static", "tmp", strconv.Itoa(tmpIndex))
+	targetDir := filepath.Join(basePath, tmpDir)
+	tmpIndex++
+	mutex.Unlock()
+
+	if err := os.MkdirAll(targetDir, 0777); err != nil {
+		log.Printf("Error creating tmp directory: %v\n", err)
 		return
 	}
 
 	// copy files from theme folder into tmp directory
-	ext := filepath.Ext(name)
-	themeDirName := name[:len(name)-len(ext)] + ".theme"
-	themeDir := filepath.Join(filepath.Dir(name), themeDirName)
-	dir, err := os.Open(themeDir)
+	dir, err := os.Open(themePath)
 	if err != nil {
 		log.Printf("Error opening theme directory: %v\n", err)
 		return
@@ -141,7 +188,7 @@ func parseTheme(name string, doc *present.Doc) {
 
 	items, err := dir.Readdir(-1)
 	for _, item := range items {
-		source := filepath.Join(themeDir, item.Name())
+		source := filepath.Join(themePath, item.Name())
 		target := filepath.Join(targetDir, item.Name())
 		if err := copyFile(source, target); err != nil {
 			log.Printf("Error copying theme file '%s' to tmp directory: %v\n", item.Name(), err)
@@ -149,7 +196,7 @@ func parseTheme(name string, doc *present.Doc) {
 	}
 
 	// read info from theme file and populate Doc object
-	themeFile := filepath.Join(themeDir, "theme.json")
+	themeFile := filepath.Join(themePath, "theme.json")
 	f, err := os.Open(themeFile)
 	if err != nil {
 		log.Printf("Error opening theme file: %v\n", err)
@@ -169,7 +216,12 @@ func parseTheme(name string, doc *present.Doc) {
 		return
 	}
 	if theme.Stylesheets != nil {
-		doc.Stylesheets = append(doc.Stylesheets, theme.Stylesheets...)
+		for _, stylesheet := range theme.Stylesheets {
+			if stylesheet[0] != '/' {
+				stylesheet = "/" + filepath.Join(tmpDir, stylesheet)
+			}
+			doc.Stylesheets = append(doc.Stylesheets, stylesheet)
+		}
 	}
 	if theme.HideLastSlide {
 		doc.ShowFinalSlide = false
@@ -276,7 +328,7 @@ func showFile(n string) bool {
 
 // showDir reports whether the given directory should be displayed in the list.
 func showDir(n string) bool {
-	if len(n) > 0 && (n[0] == '.' || n[0] == '_') || n == "present" || filepath.Ext(n) == ".theme" {
+	if len(n) > 0 && (n[0] == '.' || n[0] == '_') || n == "present" || n == "plus-themes" {
 		return false
 	}
 	return true

@@ -15,6 +15,7 @@ import (
 	"log"
 	"net/url"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 	"unicode"
@@ -72,7 +73,7 @@ type Doc struct {
 	Sections       []Section
 	Tags           []string
 	Stylesheets    []string
-	Styles         string
+	Theme          string
 	ShowFinalSlide bool
 }
 
@@ -225,6 +226,25 @@ func (l *Lines) nextNonEmpty() (text string, ok bool) {
 		}
 		if len(text) > 0 {
 			break
+		}
+	}
+	return
+}
+
+func (l *Lines) headerComments() (comments []string) {
+	line := -1
+	comments = []string{}
+	for {
+		line++
+		if line >= len(l.text) {
+			return
+		}
+		text := l.text[line]
+		if len(text) > 0 {
+			if text[0] != '#' {
+				break
+			}
+			comments = append(comments, text)
 		}
 	}
 	return
@@ -393,6 +413,24 @@ func parseSections(ctx *Context, name string, lines *Lines, number []int, doc *D
 }
 
 func parseHeader(doc *Doc, lines *Lines) error {
+	// Extract styles if included
+	comments := lines.headerComments()
+	if len(comments) > 0 {
+		for _, comment := range comments {
+			if strings.Index(comment, "#theme=") == 0 {
+				doc.Theme = comment[7:]
+			}
+			if strings.Index(comment, "#stylesheet=") == 0 {
+				doc.Stylesheets = append(doc.Stylesheets, comment[12:])
+			}
+			if strings.Index(comment, "#hideLastSlide=") == 0 {
+				val, err := strconv.ParseBool(comment[15:])
+				if err == nil {
+					doc.ShowFinalSlide = !val
+				}
+			}
+		}
+	}
 	var ok bool
 	// First non-empty line starts header.
 	doc.Title, ok = lines.nextNonEmpty()

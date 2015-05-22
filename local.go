@@ -15,6 +15,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"path/filepath"
 	"runtime"
 	"strings"
 
@@ -42,6 +43,12 @@ func main() {
 			os.Exit(1)
 		}
 		basePath = p.Dir
+
+		tmpDir := filepath.Join(basePath, "static", "tmp")
+		if err := os.RemoveAll(tmpDir); err != nil {
+			fmt.Fprintf(os.Stderr, "Couldn't remove tmp directory '%s': %v\n", tmpDir, err)
+			os.Exit(1)
+		}
 	}
 	err := initTemplates(basePath)
 	if err != nil {

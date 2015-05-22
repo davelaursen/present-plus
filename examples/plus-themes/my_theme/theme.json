@@ -2,6 +2,6 @@
     "hide-last-slide": false,
     "stylesheets": [
         "//fonts.googleapis.com/css?family=Raleway:regular,semibold|Varela",
-        "/static/tmp/black.css"
+        "test.css"
     ]
 }
