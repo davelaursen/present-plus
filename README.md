@@ -28,4 +28,9 @@ export PATH=$PATH:$GOPATH/bin
 
 To learn how to create Go Present files, [check out the official documentation](https://godoc.org/golang.org/x/tools/present).
 
-To learn how to create custom themes and take advantage of what Present-Plus has to offer, run `present-plus` in the examples folder - the sample slide decks provide details on how to use Present-Plus.
+To learn how to create custom themes and take advantage of what Present-Plus has to offer, start Present-Plus from the examples directory and navigate to `localhost:4999` in your browser:
+
+    $ cd $GOPATH/src/github.com/davelaursen/present-plus
+    $ present-plus
+
+The sample slide decks provide details on how to use Present-Plus.
