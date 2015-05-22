@@ -2,7 +2,7 @@ section {
     background-color: #1a1a1a;
 }
 
-article {
+.slides > article {
     font-family: Varela, 'Open Sans', 'Helvetica Nueue', Helvetica, Arial, sans-serif;
     color: #222;
     background-image: url(black-bg.jpg);
