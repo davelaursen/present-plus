@@ -1,6 +1,6 @@
 # present-plus
 
-Present-Plus is a fork of the Go Present tool (golang.org/x/tools/cmd/present) that adds new features such as themes.  Since the additional features provided by Present-Plus are specified in separate files, the .slide and .article files remain untouched and can continue to be rendered with Go Present.
+Present-Plus is a fork of the Go Present tool (golang.org/x/tools/cmd/present) that adds new features such as themes.  Since the additional features provided by Present-Plus are specified in comments, the .slide and .article files can continue to be rendered with Go Present with no side effects.
 
 ## Installation
 
