@@ -6,7 +6,6 @@ Present-Plus is a fork of the Go Present tool (golang.org/x/tools/cmd/present) t
 
 Present-Plus is currently in development. The following represents the active backlog - once the the V1 items are complete, Present-Plus will be released as a beta product.
 
-- add theme support to articles
 - add sample slides for using remote stylesheets
 - add more built-in themes
 
