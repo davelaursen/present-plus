@@ -1,14 +1,14 @@
 # Present-Plus
 
-Present-Plus is a fork of the Go Present tool (golang.org/x/tools/cmd/present) that adds new features such as themes. Since the additional features provided by Present-Plus are specified in comments, your .slide and .article files can continue to be rendered with Go Present with no side effects.
+Present-Plus is a fork of the Go Present tool (golang.org/x/tools/cmd/present) that adds new features such as themes. Since the additional features provided by Present-Plus are implemented within comments, your .slide and .article files remain completely compatible with Go Present.
 
 ## Backlog
 
-Present-Plus is currently in development. The following represents the active backlog - once these items are complete, this section will be removed and Present-Plus will be released as a beta product.
+Present-Plus is currently in development. The following represents the active backlog - once the the V1 items are complete, Present-Plus will be released as a beta product.
 
+- add theme support to articles
 - add sample slides for using remote stylesheets
 - add more built-in themes
-- update sample slides & README to provide details on how to create a theme
 
 ## Installation
 
@@ -30,7 +30,7 @@ To learn how to create Go Present files, [check out the official documentation](
 
 To learn how to create custom themes and take advantage of what Present-Plus has to offer, start Present-Plus from the examples directory and navigate to `localhost:4999` in your browser:
 
-    $ cd $GOPATH/src/github.com/davelaursen/present-plus
+    $ cd $GOPATH/src/github.com/davelaursen/present-plus/examples
     $ present-plus
 
-The sample slide decks provide details on how to use Present-Plus.
+The sample slide decks provide details on how to use Present-Plus and create custom themes.

@@ -416,15 +416,18 @@ func parseHeader(doc *Doc, lines *Lines) error {
 	// Extract styles if included
 	comments := lines.headerComments()
 	if len(comments) > 0 {
+		themeStr := "#+theme="
+		styleStr := "#+stylesheet="
+		hideStr := "#+hideLastSlide="
 		for _, comment := range comments {
-			if strings.Index(comment, "#theme=") == 0 {
-				doc.Theme = comment[7:]
+			if strings.Index(comment, themeStr) == 0 {
+				doc.Theme = comment[len(themeStr):]
 			}
-			if strings.Index(comment, "#stylesheet=") == 0 {
-				doc.Stylesheets = append(doc.Stylesheets, comment[12:])
+			if strings.Index(comment, "#+stylesheet=") == 0 {
+				doc.Stylesheets = append(doc.Stylesheets, comment[len(styleStr):])
 			}
-			if strings.Index(comment, "#hideLastSlide=") == 0 {
-				val, err := strconv.ParseBool(comment[15:])
+			if strings.Index(comment, "#+hideLastSlide=") == 0 {
+				val, err := strconv.ParseBool(comment[len(hideStr):])
 				if err == nil {
 					doc.ShowFinalSlide = !val
 				}

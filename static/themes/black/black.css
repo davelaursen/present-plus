@@ -6,12 +6,14 @@ section {
     font-family: Varela, 'Open Sans', 'Helvetica Nueue', Helvetica, Arial, sans-serif;
     color: #222;
     background-image: url(black-bg.jpg);
-    background-size: cover;
 
     transition: transform .3s ease-out, opacity .3s ease-out;
     -o-transition: -o-transform .3s ease-out, opacity .3s ease-out;
     -moz-transition: -moz-transform .3s ease-out, opacity .3s ease-out;
     -webkit-transition: -webkit-transform .3s ease-out, opacity .3s ease-out;
+}
+article.first-slide {
+    background-size: cover;
 }
 
 article.past,
