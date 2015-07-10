@@ -66,15 +66,16 @@ func Register(name string, parser ParseFunc) {
 
 // Doc represents an entire document.
 type Doc struct {
-	Title          string
-	Subtitle       string
-	Time           time.Time
-	Authors        []Author
-	Sections       []Section
-	Tags           []string
-	Stylesheets    []string
-	Theme          string
-	ShowFinalSlide bool
+	Title              string
+	Subtitle           string
+	Time               time.Time
+	Authors            []Author
+	Sections           []Section
+	Tags               []string
+	ArticleStylesheets []string
+	SlideStylesheets   []string
+	Theme              string
+	ShowFinalSlide     bool
 }
 
 // Author represents the person who wrote and/or is presenting the document.
@@ -271,7 +272,8 @@ func (ctx *Context) Parse(r io.Reader, name string, mode ParseMode) (*Doc, error
 	if err != nil {
 		return nil, err
 	}
-	doc.Stylesheets = []string{}
+	doc.ArticleStylesheets = []string{}
+	doc.SlideStylesheets = []string{}
 	doc.ShowFinalSlide = true
 	err = parseHeader(doc, lines)
 	if err != nil {
@@ -417,16 +419,20 @@ func parseHeader(doc *Doc, lines *Lines) error {
 	comments := lines.headerComments()
 	if len(comments) > 0 {
 		themeStr := "#+theme="
-		styleStr := "#+stylesheet="
+		articleStyleStr := "#+articleStylesheet="
+		slideStyleStr := "#+slideStylesheet="
 		hideStr := "#+hideLastSlide="
 		for _, comment := range comments {
 			if strings.Index(comment, themeStr) == 0 {
 				doc.Theme = comment[len(themeStr):]
 			}
-			if strings.Index(comment, "#+stylesheet=") == 0 {
-				doc.Stylesheets = append(doc.Stylesheets, comment[len(styleStr):])
+			if strings.Index(comment, articleStyleStr) == 0 {
+				doc.ArticleStylesheets = append(doc.ArticleStylesheets, comment[len(articleStyleStr):])
 			}
-			if strings.Index(comment, "#+hideLastSlide=") == 0 {
+			if strings.Index(comment, slideStyleStr) == 0 {
+				doc.SlideStylesheets = append(doc.SlideStylesheets, comment[len(slideStyleStr):])
+			}
+			if strings.Index(comment, hideStr) == 0 {
 				val, err := strconv.ParseBool(comment[len(hideStr):])
 				if err == nil {
 					doc.ShowFinalSlide = !val

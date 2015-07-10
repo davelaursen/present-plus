@@ -1,7 +1,11 @@
 {
     "hide-last-slide": false,
-    "stylesheets": [
+    "slide-stylesheets": [
         "//fonts.googleapis.com/css?family=Raleway:regular,semibold|Varela",
-        "black.css"
+        "slide.css"
+    ],
+    "article-stylesheets": [
+        "//fonts.googleapis.com/css?family=Raleway:regular,semibold|Varela",
+        "article.css"
     ]
 }

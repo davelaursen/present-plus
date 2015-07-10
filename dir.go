@@ -104,7 +104,9 @@ func renderDoc(w io.Writer, docFile string) error {
 	if err != nil {
 		return err
 	}
-	if doc.Theme == "" && defaultTheme != "" && len(doc.Stylesheets) == 0 {
+	ext := filepath.Ext(docFile)
+	if doc.Theme == "" && defaultTheme != "" &&
+		((ext == ".article" && len(doc.ArticleStylesheets) == 0) || (ext == ".slide" && len(doc.SlideStylesheets) == 0)) {
 		doc.Theme = defaultTheme
 	}
 	if doc.Theme != "" {
@@ -208,8 +210,9 @@ func parseTheme(name string, doc *present.Doc) {
 	defer f.Close()
 
 	type Theme struct {
-		Stylesheets   []string `json:"stylesheets"`
-		HideLastSlide bool     `json:"hide-last-slide"`
+		ArticleStylesheets []string `json:"article-stylesheets"`
+		SlideStylesheets   []string `json:"slide-stylesheets"`
+		HideLastSlide      bool     `json:"hide-last-slide"`
 	}
 	var theme Theme
 
@@ -218,12 +221,20 @@ func parseTheme(name string, doc *present.Doc) {
 		log.Printf("Error parsing JSON object from theme file: %v\n", err)
 		return
 	}
-	if theme.Stylesheets != nil {
-		for _, stylesheet := range theme.Stylesheets {
+	if theme.ArticleStylesheets != nil {
+		for _, stylesheet := range theme.ArticleStylesheets {
 			if stylesheet[0] != '/' {
 				stylesheet = "/" + filepath.Join(tmpDir, stylesheet)
 			}
-			doc.Stylesheets = append(doc.Stylesheets, stylesheet)
+			doc.ArticleStylesheets = append(doc.ArticleStylesheets, stylesheet)
+		}
+	}
+	if theme.SlideStylesheets != nil {
+		for _, stylesheet := range theme.SlideStylesheets {
+			if stylesheet[0] != '/' {
+				stylesheet = "/" + filepath.Join(tmpDir, stylesheet)
+			}
+			doc.SlideStylesheets = append(doc.SlideStylesheets, stylesheet)
 		}
 	}
 	if theme.HideLastSlide {
