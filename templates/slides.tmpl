@@ -42,7 +42,7 @@
   <!-- end of slide {{$i}} -->
   {{end}}{{/* of Slide block */}}
 
-  {{if .ShowFinalSlide}}
+  {{if eq .HideLastSlide "false"}}
       <article class="last-slide">
         <h3>{{.ClosingMessage}}</h3>
         {{range .Authors}}

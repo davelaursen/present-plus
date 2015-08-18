@@ -15,7 +15,7 @@ import (
 	"log"
 	"net/url"
 	"regexp"
-	"strconv"
+	// "strconv"
 	"strings"
 	"time"
 	"unicode"
@@ -75,7 +75,7 @@ type Doc struct {
 	ArticleStylesheets []string
 	SlideStylesheets   []string
 	Theme              string
-	ShowFinalSlide     bool
+	HideLastSlide      string
 	ClosingMessage     string
 }
 
@@ -275,8 +275,8 @@ func (ctx *Context) Parse(r io.Reader, name string, mode ParseMode) (*Doc, error
 	}
 	doc.ArticleStylesheets = []string{}
 	doc.SlideStylesheets = []string{}
-	doc.ShowFinalSlide = true
-	doc.ClosingMessage = "Thank You"
+	doc.HideLastSlide = ""
+	doc.ClosingMessage = ""
 	err = parseHeader(doc, lines)
 	if err != nil {
 		return nil, err
@@ -436,10 +436,7 @@ func parseHeader(doc *Doc, lines *Lines) error {
 				doc.SlideStylesheets = append(doc.SlideStylesheets, comment[len(slideStyleStr):])
 			}
 			if strings.Index(comment, hideStr) == 0 {
-				val, err := strconv.ParseBool(comment[len(hideStr):])
-				if err == nil {
-					doc.ShowFinalSlide = !val
-				}
+				doc.HideLastSlide = comment[len(hideStr):]
 			}
 			if strings.Index(comment, closingMsgStr) == 0 {
 				doc.ClosingMessage = comment[len(closingMsgStr):]

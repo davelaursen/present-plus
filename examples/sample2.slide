@@ -47,6 +47,10 @@ There may be times when you don't want the last slide with the presenter details
 
     #+hideLastSlide=true
 
+You can also change the 'Thank You' message on the last slide to whatever message you want:
+
+    #+closingMessage=Thanks and Good Night!
+
 * Setting a Default Theme
 
 If you want any presentation that doesn't specify stylesheets or a theme to use a default theme of your choosing, you can specify this when you launch Present-Plus:
@@ -62,7 +66,6 @@ A theme is basically a CSS file that overrides the default styles.css file locat
 To create a new theme, create a folder that has the theme name, and add a 'theme.json' file to the folder. Below is a sample theme.json file:
 
     {
-        "hide-last-slide": true,
         "slide-stylesheets": [
             "//fonts.googleapis.com/css?family=Raleway:regular,semibold|Varela",
             "slide.css"
@@ -70,14 +73,22 @@ To create a new theme, create a folder that has the theme name, and add a 'theme
         "article-stylesheets": [
             "//fonts.googleapis.com/css?family=Raleway:regular,semibold|Varela",
             "article.css"
-        ]
+        ],
+        "hide-last-slide": true,
+        "closing-message": "Thank You!"
     }
+
+* Creating a Theme (continued)
 
 This theme folder can then be placed within a 'plus-themes' folder so that it can be used by your slides or articles (see slide #3: Using a Theme).
 
-The `hide-last-slide` property, if set to true, will remove the 'Thank you' slide that is automatically added to the end of the slide deck.
-
 The `slide-stylesheets` and `article-stylesheets` properties are each an array that contains either urls to a stylesheet or font or the names of a stylesheet located within the theme folder. In this example, 'slide.css' is located next to the 'theme.json' file and contains css styles for slides that override the default styles found in styles.css.
+
+The `hide-last-slide` property, if set to true, will remove the 'Thank You' slide that is automatically added to the end of the slide deck.
+
+The `closing-message` property allows you to overwrite the standard 'Thank You' message on the last slide with a different message.
+
+* Creating a Theme (continued)
 
 Any files referenced by your custom CSS files (i.e. background image) must be included in the theme folder, but do not need to be listed in the theme.json file.
 

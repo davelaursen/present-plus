@@ -212,7 +212,7 @@ func parseTheme(name string, doc *present.Doc) {
 	type Theme struct {
 		ArticleStylesheets []string `json:"article-stylesheets"`
 		SlideStylesheets   []string `json:"slide-stylesheets"`
-		HideLastSlide      bool     `json:"hide-last-slide"`
+		HideLastSlide      string   `json:"hide-last-slide"`
 		ClosingMessage     string   `json:"closing-message"`
 	}
 	var theme Theme
@@ -223,26 +223,38 @@ func parseTheme(name string, doc *present.Doc) {
 		return
 	}
 	if theme.ArticleStylesheets != nil {
+		tempArr := []string{}
 		for _, stylesheet := range theme.ArticleStylesheets {
 			if stylesheet[0] != '/' {
 				stylesheet = "/" + filepath.Join(tmpDir, stylesheet)
 			}
-			doc.ArticleStylesheets = append(doc.ArticleStylesheets, stylesheet)
+			tempArr = append(tempArr, stylesheet)
 		}
+		doc.ArticleStylesheets = append(tempArr, doc.ArticleStylesheets...)
 	}
 	if theme.SlideStylesheets != nil {
+		tempArr := []string{}
 		for _, stylesheet := range theme.SlideStylesheets {
 			if stylesheet[0] != '/' {
 				stylesheet = "/" + filepath.Join(tmpDir, stylesheet)
 			}
-			doc.SlideStylesheets = append(doc.SlideStylesheets, stylesheet)
+			tempArr = append(tempArr, stylesheet)
+		}
+		doc.SlideStylesheets = append(tempArr, doc.SlideStylesheets...)
+	}
+	if doc.HideLastSlide == "" {
+		if theme.HideLastSlide != "" {
+			doc.HideLastSlide = theme.HideLastSlide
+		} else {
+			doc.HideLastSlide = "false"
 		}
 	}
-	if theme.HideLastSlide {
-		doc.ShowFinalSlide = false
-	}
-	if theme.ClosingMessage != "" {
-		doc.ClosingMessage = theme.ClosingMessage
+	if doc.ClosingMessage == "" {
+		if theme.ClosingMessage != "" {
+			doc.ClosingMessage = theme.ClosingMessage
+		} else {
+			doc.ClosingMessage = "Thank You"
+		}
 	}
 }
 

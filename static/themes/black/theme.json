@@ -1,5 +1,5 @@
 {
-    "hide-last-slide": false,
+    "hide-last-slide": "false",
     "slide-stylesheets": [
         "//fonts.googleapis.com/css?family=Raleway:regular,semibold|Varela",
         "slide.css"
