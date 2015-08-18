@@ -44,7 +44,7 @@
 
   {{if .ShowFinalSlide}}
       <article class="last-slide">
-        <h3>Thank you</h3>
+        <h3>{{.ClosingMessage}}</h3>
         {{range .Authors}}
           <div class="presenter">
             {{range .Elem}}{{elem $.Template .}}{{end}}

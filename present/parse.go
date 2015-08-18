@@ -76,6 +76,7 @@ type Doc struct {
 	SlideStylesheets   []string
 	Theme              string
 	ShowFinalSlide     bool
+	ClosingMessage     string
 }
 
 // Author represents the person who wrote and/or is presenting the document.
@@ -275,6 +276,7 @@ func (ctx *Context) Parse(r io.Reader, name string, mode ParseMode) (*Doc, error
 	doc.ArticleStylesheets = []string{}
 	doc.SlideStylesheets = []string{}
 	doc.ShowFinalSlide = true
+	doc.ClosingMessage = "Thank You"
 	err = parseHeader(doc, lines)
 	if err != nil {
 		return nil, err
@@ -422,6 +424,7 @@ func parseHeader(doc *Doc, lines *Lines) error {
 		articleStyleStr := "#+articleStylesheet="
 		slideStyleStr := "#+slideStylesheet="
 		hideStr := "#+hideLastSlide="
+		closingMsgStr := "#+closingMessage="
 		for _, comment := range comments {
 			if strings.Index(comment, themeStr) == 0 {
 				doc.Theme = comment[len(themeStr):]
@@ -437,6 +440,9 @@ func parseHeader(doc *Doc, lines *Lines) error {
 				if err == nil {
 					doc.ShowFinalSlide = !val
 				}
+			}
+			if strings.Index(comment, closingMsgStr) == 0 {
+				doc.ClosingMessage = comment[len(closingMsgStr):]
 			}
 		}
 	}

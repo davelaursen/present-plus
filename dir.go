@@ -213,6 +213,7 @@ func parseTheme(name string, doc *present.Doc) {
 		ArticleStylesheets []string `json:"article-stylesheets"`
 		SlideStylesheets   []string `json:"slide-stylesheets"`
 		HideLastSlide      bool     `json:"hide-last-slide"`
+		ClosingMessage     string   `json:"closing-message"`
 	}
 	var theme Theme
 
@@ -239,6 +240,9 @@ func parseTheme(name string, doc *present.Doc) {
 	}
 	if theme.HideLastSlide {
 		doc.ShowFinalSlide = false
+	}
+	if theme.ClosingMessage != "" {
+		doc.ClosingMessage = theme.ClosingMessage
 	}
 }
 
