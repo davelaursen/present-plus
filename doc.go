@@ -16,6 +16,7 @@ Usage of present:
   -nacl=false: use Native Client environment playground (prevents non-Go code execution)
   -orighost="": host component of web origin URL (e.g., 'localhost')
   -play=true: enable playground (permit execution of arbitrary user code)
+  -theme="black": the default theme to apply when no custom styles are defined
 
 The setup of the Go version of NaCl is documented at:
 https://golang.org/wiki/NativeClient

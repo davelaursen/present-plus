@@ -161,7 +161,15 @@ func parseTheme(name string, doc *present.Doc) {
 		prevPath = dirPath
 		dirPath = filepath.Dir(dirPath)
 	}
-	// if not found, look in present-plus's static/themes folder
+	// if not found, look in theme repo
+	if themePath == "" {
+		path := filepath.Join(repoPath, doc.Theme)
+		lookedIn += "\n  " + repoPath
+		if isDir(path) {
+			themePath = path
+		}
+	}
+	// if not found, look in the default theme folder
 	if themePath == "" {
 		themePath = filepath.Join(basePath, "static", "themes", doc.Theme)
 		lookedIn += "\n  " + filepath.Dir(themePath)
