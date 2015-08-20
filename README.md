@@ -2,14 +2,9 @@
 
 Present-Plus is a fork of the Go Present tool (golang.org/x/tools/cmd/present) that adds new features such as themes. Since the additional features provided by Present-Plus are implemented within comments, your .slide and .article files remain completely compatible with Go Present.
 
-## Backlog
+## ALPHA
 
-Present-Plus is currently in development. The following represents the active backlog - once these items are complete, Present-Plus will be released as a beta product.
-
-- add more built-in themes
-- add more information to sample slides
-- add full theme support for .article files
-- document key features in README for quick reference
+Present-Plus is currently an alpha product. See the [beta](https://github.com/davelaursen/present-plus/milestones) milestone in the [Issues](https://github.com/davelaursen/present-plus/issues) section to see remaining items and the targetted beta release date.
 
 ## Installation
 
@@ -35,3 +30,13 @@ To learn how to create custom themes and take advantage of what Present-Plus has
     $ present-plus
 
 The sample slide decks provide details on how to use Present-Plus and create custom themes.
+
+## Contributions / Suggestions
+
+This project will continue to evolve. The goal is to enhance Go Present to increase adoption and use, as I think that the idea of generating slide decks and articles from simple markdown is a great one.
+
+If you are interested in submitting feature requests or making a pull request, please remember the prime directive for this project:
+
+*At all times, articles and presentations that make use of Present-Plus's features must remain fully backwards-compatible with Go Present.*
+
+Thanks!
