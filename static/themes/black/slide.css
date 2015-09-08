@@ -42,15 +42,21 @@ article h3 {
 article.first-slide h3,
 article.last-slide h3 {
     font-size: 1.5em;
-    border: none;
-    padding: none;
-    margin: none;
+    border: 0;
+    padding: 0;
+    margin: 0;
 }
-article.first-slide h3 {
+article.first-slide h3.date {
     border-top: 1px solid #aaa;
     padding-top: 15px;
     margin-top: 20px;
 }
 article.last-slide {
     padding: 5em;
+}
+
+div.code {
+    background-color: #F0F0F0;
+    border: 1px solid #999;
+    border-radius: 0px;
 }

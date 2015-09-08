@@ -21,7 +21,7 @@
       <article class="first-slide">
         <h1>{{.Title}}</h1>
         {{with .Subtitle}}<h3>{{.}}</h3>{{end}}
-        {{if not .Time.IsZero}}<h3>{{.Time.Format "2 January 2006"}}</h3>{{end}}
+        {{if not .Time.IsZero}}<h3 class="date">{{.Time.Format "2 January 2006"}}</h3>{{end}}
         {{range .Authors}}
           <div class="presenter">
             {{range .TextElem}}{{elem $.Template .}}{{end}}

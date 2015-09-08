@@ -38,3 +38,10 @@ h2 {
 .author > p {
     margin: 2px 0 0 20px;
 }
+
+div.code {
+    background-color: #F0F0F0;
+    border: 1px solid #999;
+    border-radius: 0px;
+    padding: 5px 10px;
+}
