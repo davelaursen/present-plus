@@ -7,5 +7,9 @@
     "article-stylesheets": [
         "//fonts.googleapis.com/css?family=Raleway:regular,semibold|Varela",
         "article.css"
+    ],
+    "directory-stylesheets": [
+        "//fonts.googleapis.com/css?family=Raleway:regular,semibold|Varela",
+        "directory.css"
     ]
 }

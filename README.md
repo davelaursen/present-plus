@@ -6,7 +6,7 @@ If you're looking for themes, Present-Plus has built-in support for the [Present
 
 ## ALPHA
 
-Present-Plus is currently an alpha product. See the [beta](https://github.com/davelaursen/present-plus/milestones) milestone in the [Issues](https://github.com/davelaursen/present-plus/issues) section to see remaining items and the targetted beta release date.
+Present-Plus is currently an alpha product. See the [beta](https://github.com/davelaursen/present-plus/milestones) milestone in the [Issues](https://github.com/davelaursen/present-plus/issues) section to see remaining items and the targeted beta release date.
 
 ## Installation
 
@@ -17,10 +17,7 @@ To install Present-Plus, simply run:
 $ go get github.com/davelaursen/present-plus
 ```
 
-Make sure your PATH includes the `$GOPATH/bin` directory so Present-Plus can easily be run:
-```
-export PATH=$PATH:$GOPATH/bin
-```
+Make sure your GOPATH environment variable is set and your PATH includes the `$GOPATH/bin` directory so Present-Plus can easily be run.
 
 ## Getting Started
 

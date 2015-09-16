@@ -6,7 +6,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"html/template"
 	"io"
 	"log"
@@ -148,7 +147,6 @@ type Theme struct {
 
 func loadTheme(dirPath, themeName string) (Theme, string, bool) {
 	dirPath, err := filepath.Abs(dirPath)
-	fmt.Printf("TEST: %s, %s\n", dirPath, themeName)
 	// find theme folder
 	lookedIn := ""
 	themePath := ""
@@ -327,7 +325,8 @@ func dirList(w io.Writer, name string) (isDir bool, err error) {
 	if err != nil {
 		return false, err
 	}
-	d := &dirListData{Path: name}
+	themeName := defaultTheme
+	d := &dirListData{Path: name, Title: "Go Talks"}
 	for _, fi := range fis {
 		// skip the golang.org directory
 		if name == "." && fi.Name() == "golang.org" {
@@ -349,7 +348,7 @@ func dirList(w io.Writer, name string) (isDir bool, err error) {
 				Title string `json:"title"`
 				Theme string `json:"theme"`
 			}
-			metadata := Metadata{Title: "Go Talks"}
+			var metadata Metadata
 
 			jsonParser := json.NewDecoder(f2)
 			if err = jsonParser.Decode(&metadata); err != nil {
@@ -359,25 +358,10 @@ func dirList(w io.Writer, name string) (isDir bool, err error) {
 			if metadata.Title != "" {
 				d.Title = metadata.Title
 			}
-			themeName := defaultTheme
 			if metadata.Theme != "" {
 				themeName = metadata.Theme
 			}
-			fmt.Printf("themeName: '%s'\n", themeName)
-			theme, tmpDir, success := loadTheme(name, themeName)
-			if !success {
-				continue
-			}
-			if theme.DirectoryStylesheets != nil {
-				tempArr := []string{}
-				for _, stylesheet := range theme.DirectoryStylesheets {
-					if stylesheet[0] != '/' {
-						stylesheet = "/" + filepath.Join(tmpDir, stylesheet)
-					}
-					tempArr = append(tempArr, stylesheet)
-				}
-				d.Stylesheets = append(tempArr, d.Stylesheets...)
-			}
+			continue
 		}
 		if fi.IsDir() && showDir(e.Name) {
 			d.Dirs = append(d.Dirs, e)
@@ -399,6 +383,20 @@ func dirList(w io.Writer, name string) (isDir bool, err error) {
 			d.Other = append(d.Other, e)
 		}
 	}
+	if themeName != "" {
+		theme, tmpDir, success := loadTheme(name, themeName)
+		if success && theme.DirectoryStylesheets != nil {
+			tempArr := []string{}
+			for _, stylesheet := range theme.DirectoryStylesheets {
+				if stylesheet[0] != '/' {
+					stylesheet = "/" + filepath.Join(tmpDir, stylesheet)
+				}
+				tempArr = append(tempArr, stylesheet)
+			}
+			d.Stylesheets = append(tempArr, d.Stylesheets...)
+		}
+	}
+
 	if d.Path == "." {
 		d.Path = ""
 	}
