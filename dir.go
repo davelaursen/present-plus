@@ -6,6 +6,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"html/template"
 	"io"
 	"log"
@@ -137,22 +138,27 @@ func isDir(path string) bool {
 	return false
 }
 
-func parseTheme(name string, doc *present.Doc) {
+type Theme struct {
+	DirectoryStylesheets []string `json:"directory-stylesheets"`
+	ArticleStylesheets   []string `json:"article-stylesheets"`
+	SlideStylesheets     []string `json:"slide-stylesheets"`
+	HideLastSlide        string   `json:"hide-last-slide"`
+	ClosingMessage       string   `json:"closing-message"`
+}
+
+func loadTheme(dirPath, themeName string) (Theme, string, bool) {
+	dirPath, err := filepath.Abs(dirPath)
+	fmt.Printf("TEST: %s, %s\n", dirPath, themeName)
 	// find theme folder
 	lookedIn := ""
 	themePath := ""
 	// first look for plus-themes folder in current or ancestor directory
-	dirPath, err := filepath.Abs(filepath.Dir(name))
-	if err != nil {
-		log.Printf("Error attempting to determine absolute path of file '%s': %v\n", name, err)
-		dirPath = "."
-	}
 	prevPath := ""
 	for dirPath != prevPath {
 		path := filepath.Join(dirPath, "plus-themes")
 		lookedIn += "\n  " + path
 		if isDir(path) {
-			path = filepath.Join(path, doc.Theme)
+			path = filepath.Join(path, themeName)
 			if isDir(path) {
 				themePath = path
 				break
@@ -163,7 +169,7 @@ func parseTheme(name string, doc *present.Doc) {
 	}
 	// if not found, look in theme repo
 	if themePath == "" {
-		path := filepath.Join(repoPath, doc.Theme)
+		path := filepath.Join(repoPath, themeName)
 		lookedIn += "\n  " + repoPath
 		if isDir(path) {
 			themePath = path
@@ -171,11 +177,11 @@ func parseTheme(name string, doc *present.Doc) {
 	}
 	// if not found, look in the default theme folder
 	if themePath == "" {
-		themePath = filepath.Join(basePath, "static", "themes", doc.Theme)
+		themePath = filepath.Join(basePath, "static", "themes", themeName)
 		lookedIn += "\n  " + filepath.Dir(themePath)
 		if !isDir(themePath) {
-			log.Printf("Theme folder '%s' could not be found at any of the following locations:%s\n", doc.Theme, lookedIn)
-			return
+			log.Printf("Theme folder '%s' could not be found at any of the following locations:%s\n", themeName, lookedIn)
+			return Theme{}, "", false
 		}
 	}
 
@@ -188,14 +194,14 @@ func parseTheme(name string, doc *present.Doc) {
 
 	if err := os.MkdirAll(targetDir, 0777); err != nil {
 		log.Printf("Error creating tmp directory: %v\n", err)
-		return
+		return Theme{}, "", false
 	}
 
 	// copy files from theme folder into tmp directory
 	dir, err := os.Open(themePath)
 	if err != nil {
 		log.Printf("Error opening theme directory: %v\n", err)
-		return
+		return Theme{}, "", false
 	}
 	defer dir.Close()
 
@@ -208,28 +214,37 @@ func parseTheme(name string, doc *present.Doc) {
 		}
 	}
 
-	// read info from theme file and populate Doc object
+	// read info from theme file and populate Theme object
 	themeFile := filepath.Join(themePath, "theme.json")
 	f, err := os.Open(themeFile)
 	if err != nil {
 		log.Printf("Error opening theme file: %v\n", err)
-		return
+		return Theme{}, "", false
 	}
 	defer f.Close()
-
-	type Theme struct {
-		ArticleStylesheets []string `json:"article-stylesheets"`
-		SlideStylesheets   []string `json:"slide-stylesheets"`
-		HideLastSlide      string   `json:"hide-last-slide"`
-		ClosingMessage     string   `json:"closing-message"`
-	}
 	var theme Theme
 
 	jsonParser := json.NewDecoder(f)
 	if err = jsonParser.Decode(&theme); err != nil {
 		log.Printf("Error parsing JSON object from theme file: %v\n", err)
+		return Theme{}, "", false
+	}
+	return theme, tmpDir, true
+}
+
+func parseTheme(name string, doc *present.Doc) {
+	// first look for plus-themes folder in current or ancestor directory
+	dirPath, err := filepath.Abs(filepath.Dir(name))
+	if err != nil {
+		log.Printf("Error attempting to determine absolute path of file '%s': %v\n", name, err)
+		dirPath = "."
+	}
+
+	theme, tmpDir, success := loadTheme(dirPath, doc.Theme)
+	if !success {
 		return
 	}
+
 	if theme.ArticleStylesheets != nil {
 		tempArr := []string{}
 		for _, stylesheet := range theme.ArticleStylesheets {
@@ -322,6 +337,48 @@ func dirList(w io.Writer, name string) (isDir bool, err error) {
 			Name: fi.Name(),
 			Path: filepath.ToSlash(filepath.Join(name, fi.Name())),
 		}
+		if e.Name == "plus-metadata.json" {
+			f2, err2 := os.Open(e.Path)
+			if err2 != nil {
+				log.Printf("Error opening directory metadata file: %v\n", err)
+				continue
+			}
+			defer f2.Close()
+
+			type Metadata struct {
+				Title string `json:"title"`
+				Theme string `json:"theme"`
+			}
+			metadata := Metadata{Title: "Go Talks"}
+
+			jsonParser := json.NewDecoder(f2)
+			if err = jsonParser.Decode(&metadata); err != nil {
+				log.Printf("Error parsing JSON object from directory metadata file: %v\n", err)
+				continue
+			}
+			if metadata.Title != "" {
+				d.Title = metadata.Title
+			}
+			themeName := defaultTheme
+			if metadata.Theme != "" {
+				themeName = metadata.Theme
+			}
+			fmt.Printf("themeName: '%s'\n", themeName)
+			theme, tmpDir, success := loadTheme(name, themeName)
+			if !success {
+				continue
+			}
+			if theme.DirectoryStylesheets != nil {
+				tempArr := []string{}
+				for _, stylesheet := range theme.DirectoryStylesheets {
+					if stylesheet[0] != '/' {
+						stylesheet = "/" + filepath.Join(tmpDir, stylesheet)
+					}
+					tempArr = append(tempArr, stylesheet)
+				}
+				d.Stylesheets = append(tempArr, d.Stylesheets...)
+			}
+		}
 		if fi.IsDir() && showDir(e.Name) {
 			d.Dirs = append(d.Dirs, e)
 			continue
@@ -373,6 +430,8 @@ func showDir(n string) bool {
 }
 
 type dirListData struct {
+	Title                         string
+	Stylesheets                   []string
 	Path                          string
 	Dirs, Slides, Articles, Other dirEntrySlice
 }
