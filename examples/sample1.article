@@ -1,7 +1,7 @@
 #+theme=black
 
 Using Present-Plus
-20 May 2015
+16 Sep 2015
 
 Dave Laursen
 Gopher
@@ -35,7 +35,7 @@ And if that stylesheet needs to load web fonts, you can inject that as well.
     #+slide-stylesheet=//fonts.googleapis.com/css?family=Raleway:regular,semibold|Varela
     #+slide-stylesheet=//mydomain.com/styles/slide-style.css
 
-Note that you have to explicitly indicate either a slide or article stylesheet - to set a stylesheet for use in an article, you can do the following:
+Note that you have to explicitly indicate where the stylesheet is applied (slide, article or directory) - to set a stylesheet for use in an article, you can do the following:
 
     #+article-stylesheet=//fonts.googleapis.com/css?family=Raleway:regular,semibold|Varela
     #+article-stylesheet=//mydomain.com/styles/article-style.css
@@ -58,9 +58,23 @@ If you want any presentation that doesn't specify stylesheets or a theme to use 
 
 This will result in the black theme being applied when the basic Go Present styles would otherwise be used.
 
-* Creating a Theme
+* Customizing the Directory View
 
-A theme is basically a CSS file that overrides the default styles.css file located in the `static` folder in the Present-Plus source location ($GOPATH/src/github.com/davelaursen/present-plus).
+Themes can also be applied to the directory view.
+
+If a default theme is set, that theme will be applied to all directory views.
+
+To set a specific theme for a directory or otherwise customize how it is rendered, create a `plus-config.json` file in the directory:
+
+    {
+        "title": "BrieBug Solutions",
+        "theme": "briebug",
+        "hideFileName": true
+    }
+
+`title` sets the title of the page, `theme` applies a theme to the view, and setting `hideFileName` to true results in only the slide and article titled being listed without the file names.
+
+* Creating a Theme
 
 To create a new theme, create a folder that has the theme name, and add a 'theme.json' file to the folder. Below is a sample theme.json file:
 
@@ -73,20 +87,22 @@ To create a new theme, create a folder that has the theme name, and add a 'theme
             "//fonts.googleapis.com/css?family=Raleway:regular,semibold|Varela",
             "article.css"
         ],
+        "directory-stylesheets": [
+            "//fonts.googleapis.com/css?family=Raleway:regular,semibold|Varela",
+            "directory.css"
+        ],
         "hide-last-slide": true,
         "closing-message": "Thank You!"
     }
 
 This theme folder can then be placed within a 'plus-themes' folder so that it can be used by your slides or articles (see slide #3: Using a Theme).
 
-The `slide-stylesheets` and `article-stylesheets` properties are each an array that contains either urls to a stylesheet or font or the names of a stylesheet located within the theme folder. In this example, 'slide.css' is located next to the 'theme.json' file and contains css styles for slides that override the default styles found in styles.css.
+The `slide-stylesheets`, `article-stylesheets` and `directory-stylesheets` properties are arrays that contains either urls to a stylesheet or font or the names of a stylesheet located within the theme folder. In this example, 'slide.css' is located next to the 'theme.json' file and contains css styles for slides that override the default styles found in styles.css.
 
 The `hide-last-slide` property, if set to true, will remove the 'Thank You' slide that is automatically added to the end of the slide deck.
 
 The `closing-message` property allows you to overwrite the standard 'Thank You' message on the last slide with a different message.
 
-* Creating a Theme (continued)
-
 Any files referenced by your custom CSS files (i.e. background image) must be included in the theme folder, but do not need to be listed in the theme.json file.
 
-The `examples` folder in the Present-Plus source location contains an implementation of a custom theme in the 'plus-themes' folder.
+The 'examples' folder in the Present-Plus source location contains an implementation of a custom theme in the 'plus-themes' folder.

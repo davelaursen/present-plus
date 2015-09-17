@@ -45,3 +45,7 @@ div.code {
     border-radius: 0px;
     padding: 5px 10px;
 }
+code {
+    background-color: #F0F0F0;
+    border-bottom: 1px solid #aaa;
+}

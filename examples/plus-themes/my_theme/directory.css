@@ -20,13 +20,25 @@ h1 {
     letter-spacing: 0;
     color: #333;
 }
+h2 {
+    background-color: #fff;
+    color: #333;
+    text-decoration: underline;
+}
 h4 {
     color: #555;
+    margin-bottom: 7px;
+}
+dl {
+    margin-top: 7px;
+}
+dd {
+    margin-left: 10px;
 }
 
 div#footer {
     width: 900px;
-    margin: 30px auto;
+    margin: 50px auto 20px auto;
     padding: 10px;
     border-top: 1px #b1e1b1 solid;
     font-size: 0.8em;

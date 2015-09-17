@@ -60,3 +60,7 @@ div.code {
     border: 1px solid #999;
     border-radius: 0px;
 }
+code {
+    background-color: #F0F0F0;
+    border-bottom: 1px solid #aaa;
+}

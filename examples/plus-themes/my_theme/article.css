@@ -42,3 +42,7 @@ h2 {
 .author > p {
     margin: 2px 0 0 20px;
 }
+
+code {
+    border-bottom: 1px solid #aaa;
+}

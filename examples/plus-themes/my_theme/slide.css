@@ -51,3 +51,7 @@ article.first-slide h1,
 article.last-slide h3 {
     margin-top: 125px;
 }
+
+code {
+    border-bottom: 1px solid #aaa;
+}

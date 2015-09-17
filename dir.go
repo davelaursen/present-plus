@@ -137,14 +137,6 @@ func isDir(path string) bool {
 	return false
 }
 
-type Theme struct {
-	DirectoryStylesheets []string `json:"directory-stylesheets"`
-	ArticleStylesheets   []string `json:"article-stylesheets"`
-	SlideStylesheets     []string `json:"slide-stylesheets"`
-	HideLastSlide        string   `json:"hide-last-slide"`
-	ClosingMessage       string   `json:"closing-message"`
-}
-
 func loadTheme(dirPath, themeName string) (Theme, string, bool) {
 	dirPath, err := filepath.Abs(dirPath)
 	// find theme folder
@@ -326,6 +318,7 @@ func dirList(w io.Writer, name string) (isDir bool, err error) {
 		return false, err
 	}
 	themeName := defaultTheme
+	hideFileName := false
 	d := &dirListData{Path: name, Title: "Go Talks"}
 	for _, fi := range fis {
 		// skip the golang.org directory
@@ -333,34 +326,37 @@ func dirList(w io.Writer, name string) (isDir bool, err error) {
 			continue
 		}
 		e := dirEntry{
-			Name: fi.Name(),
-			Path: filepath.ToSlash(filepath.Join(name, fi.Name())),
+			Name:         fi.Name(),
+			Path:         filepath.ToSlash(filepath.Join(name, fi.Name())),
+			ShowFileName: true,
 		}
-		if e.Name == "plus-metadata.json" {
+		if e.Name == "plus-config.json" {
 			f2, err2 := os.Open(e.Path)
 			if err2 != nil {
-				log.Printf("Error opening directory metadata file: %v\n", err)
+				log.Printf("Error opening directory config file: %v\n", err)
 				continue
 			}
 			defer f2.Close()
 
-			type Metadata struct {
-				Title string `json:"title"`
-				Theme string `json:"theme"`
+			type DirConfig struct {
+				Title        string `json:"title"`
+				Theme        string `json:"theme"`
+				HideFileName bool   `json:"hideFileName"`
 			}
-			var metadata Metadata
+			var config DirConfig
 
 			jsonParser := json.NewDecoder(f2)
-			if err = jsonParser.Decode(&metadata); err != nil {
-				log.Printf("Error parsing JSON object from directory metadata file: %v\n", err)
+			if err = jsonParser.Decode(&config); err != nil {
+				log.Printf("Error parsing JSON object from directory config file: %v\n", err)
 				continue
 			}
-			if metadata.Title != "" {
-				d.Title = metadata.Title
+			if config.Title != "" {
+				d.Title = config.Title
 			}
-			if metadata.Theme != "" {
-				themeName = metadata.Theme
+			if config.Theme != "" {
+				themeName = config.Theme
 			}
+			hideFileName = config.HideFileName
 			continue
 		}
 		if fi.IsDir() && showDir(e.Name) {
@@ -400,6 +396,15 @@ func dirList(w io.Writer, name string) (isDir bool, err error) {
 	if d.Path == "." {
 		d.Path = ""
 	}
+
+	if hideFileName {
+		for i := range d.Slides {
+			d.Slides[i].ShowFileName = false
+		}
+		for i := range d.Articles {
+			d.Articles[i].ShowFileName = false
+		}
+	}
 	sort.Sort(d.Dirs)
 	sort.Sort(d.Slides)
 	sort.Sort(d.Articles)
@@ -436,6 +441,7 @@ type dirListData struct {
 
 type dirEntry struct {
 	Name, Path, Title string
+	ShowFileName      bool
 }
 
 type dirEntrySlice []dirEntry
@@ -443,3 +449,11 @@ type dirEntrySlice []dirEntry
 func (s dirEntrySlice) Len() int           { return len(s) }
 func (s dirEntrySlice) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
 func (s dirEntrySlice) Less(i, j int) bool { return s[i].Name < s[j].Name }
+
+type Theme struct {
+	DirectoryStylesheets []string `json:"directory-stylesheets"`
+	ArticleStylesheets   []string `json:"article-stylesheets"`
+	SlideStylesheets     []string `json:"slide-stylesheets"`
+	HideLastSlide        string   `json:"hide-last-slide"`
+	ClosingMessage       string   `json:"closing-message"`
+}

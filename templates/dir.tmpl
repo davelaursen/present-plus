@@ -27,7 +27,13 @@
     <h4>Articles:</h4>
     <dl>
     {{range .}}
-    <dd><a href="/{{.Path}}">{{.Title}}</a></dd>
+    <dd>
+      {{if .ShowFileName}}
+      <a href="/{{.Path}}">{{.Name}}</a>: {{.Title}}
+      {{else}}
+      <a href="/{{.Path}}">{{.Title}}</a>
+      {{end}}
+    </dd>
     {{end}}
     </dl>
     {{end}}
@@ -36,7 +42,13 @@
     <h4>Slide Decks:</h4>
     <dl>
     {{range .}}
-    <dd><a href="/{{.Path}}">{{.Title}}</a></dd>
+    <dd>
+      {{if .ShowFileName}}
+      <a href="/{{.Path}}">{{.Name}}</a>: {{.Title}}
+      {{else}}
+      <a href="/{{.Path}}">{{.Title}}</a>
+      {{end}}
+    </dd>
     {{end}}
     </dl>
     {{end}}
