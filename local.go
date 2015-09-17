@@ -71,7 +71,7 @@ func main() {
 	}
 
 	args := os.Args[1:]
-	if len(args) > 0 {
+	if len(args) > 0 && args[0][0:1] != "-" {
 		switch args[0] {
 		case "install":
 			installTheme(args)
