@@ -16,9 +16,19 @@ In addition, Present-Plus listens on a different default port (4999) than Go Pre
 
 Try it! Open two command line sessions and go to the examples directory in both. Run `present` in one and `present-plus` in the other and see the difference.
 
-* Using a Theme
+* Installing Themes
 
-Present-Plus comes with several themes out of the box - checkout out the static/themes folder under the source root to see what styles are available.
+Present-Plus comes with two simple themes out of the box: 'black' and 'white'.
+
+Additional themes can be installed on the command line from GitHub repos using the 'install' command:
+
+    present-plus install github.com/davelaursen/present-plus-themes/blue
+
+To remove a theme, use the 'uninstall' command:
+
+    present-plus uninstall blue
+
+* Using a Theme
 
 To use a theme, simply add the following line to the top of your .slide file:
 
@@ -69,10 +79,11 @@ To set a specific theme for a directory or otherwise customize how it is rendere
     {
         "title": "BrieBug Solutions",
         "theme": "briebug",
+        "hidePath": true,
         "hideFileName": true
     }
 
-`title` sets the title of the page, `theme` applies a theme to the view, and setting `hideFileName` to true results in only the slide and article titled being listed without the file names.
+`title` sets the title of the page, `theme` applies a theme to the view, `hidePath` hides the path to the current folder, and setting `hideFileName` to true results in only the slide and article titled being listed without the file names.
 
 * Creating a Theme
 

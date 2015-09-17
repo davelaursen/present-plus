@@ -12,9 +12,9 @@ Present-Plus is currently an alpha product. See the [beta](https://github.com/da
 
 Make sure you have a working Go environment. [See the install instructions](http://golang.org/doc/install.html).
 
-To install Present-Plus, simply run:
+To install (or update) Present-Plus, simply run:
 ```
-$ go get github.com/davelaursen/present-plus
+$ go get -u github.com/davelaursen/present-plus
 ```
 
 Make sure your GOPATH environment variable is set and your PATH includes the `$GOPATH/bin` directory so Present-Plus can easily be run.

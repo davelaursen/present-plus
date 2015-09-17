@@ -318,6 +318,7 @@ func dirList(w io.Writer, name string) (isDir bool, err error) {
 		return false, err
 	}
 	themeName := defaultTheme
+	hidePath := false
 	hideFileName := false
 	d := &dirListData{Path: name, Title: "Go Talks"}
 	for _, fi := range fis {
@@ -341,6 +342,7 @@ func dirList(w io.Writer, name string) (isDir bool, err error) {
 			type DirConfig struct {
 				Title        string `json:"title"`
 				Theme        string `json:"theme"`
+				HidePath     bool   `json:"hidePath"`
 				HideFileName bool   `json:"hideFileName"`
 			}
 			var config DirConfig
@@ -356,6 +358,7 @@ func dirList(w io.Writer, name string) (isDir bool, err error) {
 			if config.Theme != "" {
 				themeName = config.Theme
 			}
+			hidePath = config.HidePath
 			hideFileName = config.HideFileName
 			continue
 		}
@@ -393,7 +396,7 @@ func dirList(w io.Writer, name string) (isDir bool, err error) {
 		}
 	}
 
-	if d.Path == "." {
+	if hidePath || d.Path == "." {
 		d.Path = ""
 	}
 

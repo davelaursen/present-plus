@@ -15,6 +15,8 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"os/exec"
+	"os/user"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -28,6 +30,7 @@ const basePkg = "github.com/davelaursen/present-plus"
 var basePath string
 var repoPath string
 var defaultTheme string
+var plusDirPath string
 
 func main() {
 	httpAddr := flag.String("http", "127.0.0.1:4999", "HTTP service address (e.g., '127.0.0.1:4999')")
@@ -40,8 +43,7 @@ func main() {
 	flag.Parse()
 
 	if repoPath != "" {
-		_, err := os.Stat(repoPath)
-		if os.IsNotExist(err) {
+		if _, err := os.Stat(repoPath); os.IsNotExist(err) {
 			fmt.Fprintf(os.Stderr, "Repo directory '%s' does not exist\n", repoPath)
 			os.Exit(1)
 		}
@@ -53,10 +55,9 @@ func main() {
 		fmt.Fprintf(os.Stderr, basePathMessage, basePkg)
 		os.Exit(1)
 	}
-	defaultBasePath := p.Dir
 
 	if basePath == "" {
-		basePath = defaultBasePath
+		basePath = p.Dir
 
 		tmpDir := filepath.Join(basePath, "static", "tmp")
 		if err := os.RemoveAll(tmpDir); err != nil {
@@ -64,12 +65,24 @@ func main() {
 			os.Exit(1)
 		}
 	}
+	plusDirPath = getPlusDirPath()
 	if repoPath == "" {
-		themeRepo, _ := filepath.Abs(filepath.Join(defaultBasePath, "..", "present-plus-themes"))
-		_, err = os.Stat(themeRepo)
-		if !os.IsNotExist(err) {
-			repoPath = themeRepo
+		repoPath, _ = filepath.Abs(filepath.Join(plusDirPath, "themes"))
+	}
+
+	args := os.Args[1:]
+	if len(args) > 0 {
+		switch args[0] {
+		case "install":
+			installTheme(args)
+		case "uninstall":
+			uninstallTheme(args)
+		default:
+			fmt.Fprintf(os.Stderr, "'%s' is not a valid command\n", args[0])
+			os.Exit(1)
 		}
+
+		os.Exit(0)
 	}
 
 	err = initTemplates(basePath)
@@ -127,6 +140,86 @@ func main() {
 
 	log.Printf("Open your web browser and visit %s", origin.String())
 	log.Fatal(http.Serve(ln, nil))
+}
+
+func getPlusDirPath() string {
+	usr, err := user.Current()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Could not get current user: %s\n", err)
+		os.Exit(1)
+	}
+
+	var plusDirPath string
+	if runtime.GOOS == "windows" {
+		plusDirPath = filepath.Join(usr.HomeDir, "present_plus")
+	} else {
+		plusDirPath = filepath.Join(usr.HomeDir, ".present_plus")
+	}
+	themesDir := filepath.Join(plusDirPath, "themes")
+	if _, err = os.Stat(themesDir); os.IsNotExist(err) {
+		err := os.MkdirAll(themesDir, 0777)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error creating directory '%s': %s\n", themesDir, err)
+			os.Exit(1)
+		}
+	}
+	return plusDirPath
+}
+
+func installTheme(args []string) {
+	if len(args) != 2 {
+		fmt.Fprintf(os.Stderr, "Invalid use of '%s' command\n", args[0])
+		os.Exit(1)
+	}
+
+	tmpDir, _ := filepath.Abs(filepath.Join(plusDirPath, "tmp"))
+	os.Mkdir(tmpDir, 0777)
+	rmvTmpDir := func() {
+		if err := os.RemoveAll(tmpDir); err != nil {
+			fmt.Fprintf(os.Stderr, "Couldn't remove tmp directory '%s': %v\n", tmpDir, err)
+			os.Exit(1)
+		}
+	}
+
+	parts := strings.Split(args[1], "/")
+	for len(parts) > 0 && (strings.HasPrefix(parts[0], "http") || parts[0] == "") {
+		parts = parts[1:]
+	}
+	if len(parts) <= 2 || strings.ToLower(parts[0]) != "github.com" {
+		fmt.Fprintf(os.Stderr, "'%s' is not a valid GitHub repo\n", args[1])
+		rmvTmpDir()
+		os.Exit(1)
+	}
+	gitRepo := "https://" + filepath.Join(parts[0], parts[1], parts[2]+".git")
+	cmd := exec.Command("git", "clone", gitRepo)
+	cmd.Dir = tmpDir
+	err := cmd.Run()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error cloning repo '%s': %s\n", gitRepo, err)
+		rmvTmpDir()
+		os.Exit(1)
+	}
+	srcPath := filepath.Join(tmpDir, strings.Join(parts[2:], "/"))
+	destPath := filepath.Join(plusDirPath, "themes", parts[len(parts)-1])
+	if err := os.Rename(srcPath, destPath); err != nil {
+		fmt.Fprintf(os.Stderr, "Error copying theme to themes folder: %s\n", err)
+		rmvTmpDir()
+		os.Exit(1)
+	}
+	rmvTmpDir()
+}
+
+func uninstallTheme(args []string) {
+	if len(args) != 2 {
+		fmt.Fprintf(os.Stderr, "Invalid use of '%s' command\n", args[0])
+		os.Exit(1)
+	}
+
+	themeDir, _ := filepath.Abs(filepath.Join(plusDirPath, "themes", args[1]))
+	if err := os.RemoveAll(themeDir); err != nil {
+		fmt.Fprintf(os.Stderr, "Couldn't remove theme directory '%s': %v\n", themeDir, err)
+		os.Exit(1)
+	}
 }
 
 func playable(c present.Code) bool {
