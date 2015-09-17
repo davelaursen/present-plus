@@ -4,9 +4,11 @@ Present-Plus is a fork of the Go Present tool (golang.org/x/tools/cmd/present) t
 
 If you're looking for themes, Present-Plus has built-in support for the [Present-Plus-Themes](https://github.com/davelaursen/present-plus-themes) repo.
 
-## ALPHA
+## BETA
 
-Present-Plus is currently an alpha product. See the [beta](https://github.com/davelaursen/present-plus/milestones) milestone in the [Issues](https://github.com/davelaursen/present-plus/issues) section to see remaining items and the targeted beta release date.
+Present-Plus is currently a beta product. Please submit any issues that you find so that they can be addressed before the 1.0 Release.
+
+See the [1.0 Release](https://github.com/davelaursen/present-plus/milestones) milestone in the [Issues](https://github.com/davelaursen/present-plus/issues) section to see remaining items and the targeted 1.0 release date.
 
 ## Installation
 
@@ -29,6 +31,22 @@ To learn how to create custom themes and take advantage of what Present-Plus has
     $ present-plus
 
 The sample slide decks provide details on how to use Present-Plus and create custom themes.
+
+## Feature Overview
+
+#### Themes
+
+Present-Plus provides the ability to easily style your Go Present slides and articles. You can even apply a theme to the directory listing page. Present-Plus comes with two simple themes, but the 'install' command allows you to easily download and install additional ones. Or if you have some CSS skills, create your own!
+
+#### Formatting
+
+Present-Plus includes the ability to tweak how your presentations are rendered. For example, you can hide the last 'Thank you' slide for internal or informal presentations, and you can customize multiple aspects of the directory view.
+
+#### Share Your Style
+
+Share your creations! If a theme is accessible on GitHub, then it can be downloaded and installed using the 'install' command. And while Present-Plus only has two built-in themes ('white' and black'), the [Present-Plus-Themes](https://github.com/davelaursen/present-plus-themes) repo will continue to grow with new themes that you can install and use.
+
+For more details, see the Getting Started section to view a detailed presentation on Present-Plus's features.
 
 ## Contributions / Suggestions
 
