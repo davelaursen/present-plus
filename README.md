@@ -2,7 +2,7 @@
 
 Present-Plus is a fork of the Go Present tool (golang.org/x/tools/cmd/present) that adds new features such as themes. Since the additional features provided by Present-Plus are implemented within comments, your .slide and .article files remain completely compatible with Go Present.
 
-If you're looking for themes, Present-Plus has built-in support for the [Present-Plus-Themes](https://github.com/davelaursen/present-plus-themes) repo.
+If you're looking for themes, check out the [Present-Plus-Themes](https://github.com/davelaursen/present-plus-themes) repo.
 
 ## BETA
 
