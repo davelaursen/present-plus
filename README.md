@@ -4,6 +4,8 @@ Present-Plus is a fork of the Go Present tool (golang.org/x/tools/cmd/present) t
 
 If you're looking for themes, check out the [Present-Plus-Themes](https://github.com/davelaursen/present-plus-themes) repo.
 
+To see an online example of Present-Plus in action with a custom theme applied, check out [BrieBug Solution's presentations site](http://presentations.briebugconsulting.com/).
+
 ## BETA
 
 Present-Plus is currently a beta product. Please submit any issues that you find so that they can be addressed before the 1.0 Release.
